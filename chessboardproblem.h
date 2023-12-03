@@ -5,61 +5,65 @@
 #include<iostream>
 #include<queue>
 using namespace std;
-// ¶¨Òåµã
+// å®šä¹‰ç‚¹
 typedef struct point {
-    int x, y; // ³õÊ¼µãµÄºá×ø±êºÍ×İ×ø±ê
-    int index; // ·½ÏòÖ¸Õë
-    int weight; // ¸ÃµãµÄÈ¨Öµ
-    point() {} // Ä¬ÈÏ¹¹Ôìº¯Êı
+    int x, y; // åˆå§‹ç‚¹çš„æ¨ªåæ ‡å’Œçºµåæ ‡
+    int index; // æ–¹å‘æŒ‡é’ˆ
+    int weight; // è¯¥ç‚¹çš„æƒå€¼
+    point() {} // é»˜è®¤æ„é€ å‡½æ•°
 } point;
 
-//¶¨ÒåÕ»
+//å®šä¹‰æ ˆ
 typedef struct Stack
 {
-    point* elem; //µãµÄ×ø±ê
-    int base, top; //Í·Î²Ö¸Õë
+    point* elem; //ç‚¹çš„åæ ‡
+    int base, top; //å¤´å°¾æŒ‡é’ˆ
 }Stack;
 
-extern const int dx[8]; //x·½ÏòÒÆ¶¯
-extern const int dy[8]; //y·½ÏòÒÆ¶¯
+extern const int dx[8]; //xæ–¹å‘ç§»åŠ¨
+extern const int dy[8]; //yæ–¹å‘ç§»åŠ¨
 
 class ChessBoardProblem
 {
 private:
-    int startX, startY;//ÆğµãºÍÖÕµã
-    int order; //±ê¼Çµã±»·ÃÎÊµÄË³Ğò£¨WarnsdorffÒªÓÃ£©
-    Stack s;//Õ»£¬ÓÃÓÚÆô·¢Ê½ËÑË÷Ê±´æ´¢µã
-    queue<point>Q;//¶ÓÁĞ,ÓÃÓÚ´æ´¢Â·¾¶
-    int Board[BOARD_SIZE][BOARD_SIZE];//ÆåÅÌ
+    int startX, startY;//èµ·ç‚¹å’Œç»ˆç‚¹
+    int order; //æ ‡è®°ç‚¹è¢«è®¿é—®çš„é¡ºåºï¼ˆWarnsdorffè¦ç”¨ï¼‰
+    Stack s;//æ ˆï¼Œç”¨äºå¯å‘å¼æœç´¢æ—¶å­˜å‚¨ç‚¹
+    queue<point>Q;//é˜Ÿåˆ—,ç”¨äºå­˜å‚¨è·¯å¾„
+    int Board[BOARD_SIZE][BOARD_SIZE];//æ£‹ç›˜
+    int path[BOARD_SIZE * BOARD_SIZE][2]; //ç”¨äºå›æº¯æ³•å­˜å‚¨è·¯å¾„
+    int sol[BOARD_SIZE][BOARD_SIZE];//ç”¨äºå›æº¯æ³•å­˜æ£‹ç›˜
 public:
-    ChessBoardProblem(int start_x, int start_y,int Order) :startX(start_x), startY(start_y),order(Order) {}//³õÊ¼»¯ÁĞ±í
-    /*Õ»µÄ²Ù×÷*/
+    ChessBoardProblem(int start_x, int start_y,int Order) :startX(start_x), startY(start_y),order(Order) {}//åˆå§‹åŒ–åˆ—è¡¨
+    /*æ ˆçš„æ“ä½œ*/
     void InitStack(Stack& s);
     void push(Stack& s, point p);
     void pop(Stack&s);
     point getTop(Stack s);
     bool isEmpty(Stack s);
     void Swap(point& a, point& b);
-    /*»ØËİ·¨£¨Warnsdorff¹æÔò£©£¨ÎÒ×ö£©*/
+    /*å›æº¯æ³•ï¼ˆWarnsdorffè§„åˆ™ï¼‰ï¼ˆæˆ‘åšï¼‰*/
     int Partition(point direction[], int low, int high);
     void QSort(point direction[], int low, int high);
-    void QuickSort(point direction[], int size);  //¿ìËÙÅÅĞò
-    bool check(int x, int y); //¼ì²é±ß½ç
-    void forward(point& now, point direction[], int& index);//ÏòÇ°
-    void backward(point& now, int& index);//»ØËİ
-    int calculateTheWeight(int x, int y);//¼ÆËãÈ¨ÖØ
+    void QuickSort(point direction[], int size);  //å¿«é€Ÿæ’åº
+    bool check(int x, int y); //æ£€æŸ¥è¾¹ç•Œ
+    void forward(point& now, point direction[], int& index);//å‘å‰
+    void backward(point& now, int& index);//å›æº¯
+    int calculateTheWeight(int x, int y);//è®¡ç®—æƒé‡
     void Warnsdorff();
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     void initState();
-    /*Éî¶ÈÓÅÏÈËÑË÷*/
-
-
-
-    /*¹ã¶ÈÓÅÏÈËÑË÷*/
-
-
-
-    /*»ØËİ·¨*/
+    /*æ·±åº¦ä¼˜å…ˆæœç´¢*/
+    void DFS(point& now, point path[], int flag[BOARD_SIZE][BOARD_SIZE], int& found, int count);
+    int greedyOpt(point now, int flag[BOARD_SIZE][BOARD_SIZE]);
+    point nextPoint(point now, int flag[BOARD_SIZE][BOARD_SIZE]);
+    bool checkDFS(int x, int y, int flag[BOARD_SIZE][BOARD_SIZE]);
+    void output();
+    /*å›æº¯æ³•*/
+    void print_solution(int move_num);
+    int is_valid(int x, int y);
+    int solve_knight_tour(int move_num, int cur_x, int cur_y);
+    void knight_tour();
 };
 
 #endif
