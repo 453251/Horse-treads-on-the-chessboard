@@ -13,7 +13,8 @@ int main()
 {
     ChessBoardProblem chessboardproblem(0, 0,1);
     chessboardproblem.Warnsdorff();
-    //cout << "hello world!";
+    chessboardproblem.knight_tour();
+    chessboardproblem.output();
     return 0;
 }
 
