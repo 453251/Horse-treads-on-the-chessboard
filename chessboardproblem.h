@@ -5,7 +5,7 @@
 #include<iostream>
 #include<queue>
 using namespace std;
-// 定义点
+// 定义点（用于回溯法（结合Warnsordff））
 typedef struct point {
     int x, y; // 初始点的横坐标和纵坐标
     int index; // 方向指针
@@ -13,7 +13,7 @@ typedef struct point {
     point() {} // 默认构造函数
 } point;
 
-//定义栈
+//定义栈（用于回溯法（结合Warnsordff）)
 typedef struct Stack
 {
     point* elem; //点的坐标
@@ -42,7 +42,7 @@ public:
     point getTop(Stack s);
     bool isEmpty(Stack s);
     void Swap(point& a, point& b);
-    /*回溯法（Warnsdorff规则）（我做）*/
+    /*回溯法（Warnsdorff规则）*/
     int Partition(point direction[], int low, int high);
     void QSort(point direction[], int low, int high);
     void QuickSort(point direction[], int size);  //快速排序
