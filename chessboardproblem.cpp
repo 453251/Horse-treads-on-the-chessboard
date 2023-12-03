@@ -5,8 +5,10 @@
 #include<queue>
 #include<string.h>
 #include<string>
+#include<time.h>
 using namespace std;
 
+/***********æ ˆçš„æ“ä½œ**********/
 void ChessBoardProblem::InitStack(Stack& s)
 {
 	if (!(s.elem)) {
@@ -42,7 +44,8 @@ void ChessBoardProblem::Swap(point& a, point& b)
 	a = b;
 	b = temp;
 }
-//¿ìËÙÅÅĞòµÄ»®·Ö
+/******å›æº¯æ³•ï¼ˆWarnsordffè§„åˆ™ï¼‰******/
+//å¿«é€Ÿæ’åºçš„åˆ’åˆ†
 int ChessBoardProblem::Partition(point direction[], int low, int high)
 {
 	int pivot = low;
@@ -80,39 +83,39 @@ bool ChessBoardProblem::check(int x, int y)
 
 void ChessBoardProblem::forward(point& now, point direction[], int& index)
 {
-	//±ê¼ÇÆåÅÌË³Ğò
+	//æ ‡è®°æ£‹ç›˜é¡ºåº
 	Board[direction[index].x][direction[index].y] = ++order;
-	//ÉèÖÃÈ¨Öµ
+	//è®¾ç½®æƒå€¼
 	now.weight = direction[index].weight;
-	//ÉèÖÃindexÖ¸Õë
+	//è®¾ç½®indexæŒ‡é’ˆ
 	now.index = direction[index].index;
 	push(s, now);
-	//¸üĞÂ¸ÃµãµÄĞÅÏ¢
+	//æ›´æ–°è¯¥ç‚¹çš„ä¿¡æ¯
 	memset(&now, 0, sizeof(now));
 	now.x = direction[index].x;
 	now.y = direction[index].y;
-	//¸üĞÂindexÖ¸Õë
+	//æ›´æ–°indexæŒ‡é’ˆ
 	index = 0;
 }
 
 void ChessBoardProblem::backward(point& now, int& index)
 {
 	--order;
-	//½«ÆåÅÌÉÏµÄÕâ¸öµãÖÃÎª0
+	//å°†æ£‹ç›˜ä¸Šçš„è¿™ä¸ªç‚¹ç½®ä¸º0
 	Board[now.x][now.y] = 0;
-	//»ñÈ¡¸ÃµãÒÔ±ãÔÚÏÂÒ»´ÎÑ­»·ÖĞÖØĞÂËÑË÷
+	//è·å–è¯¥ç‚¹ä»¥ä¾¿åœ¨ä¸‹ä¸€æ¬¡å¾ªç¯ä¸­é‡æ–°æœç´¢
 	point temp = getTop(s); pop(s);
 	now.x = temp.x;
 	now.y = temp.y;
 	index = temp.index;
-	//¸üĞÂindexÖ¸Õë
+	//æ›´æ–°indexæŒ‡é’ˆ
 	index++;
 }
 
 int ChessBoardProblem::calculateTheWeight(int x, int y)
 {
-	//±éÀúÖÜÎ§°Ë¸ö·½Ïò£¬Èç¹ûÎ´ÏÂÒ»²½´æÔÚÎ´µ½´ïµÄµã£¬¸ÃµãµÄÈ¨Öµ¾ÍÔö¼Ó
-	//²ÉÓÃsum¼ÇÂ¼È¨Öµ
+	//éå†å‘¨å›´å…«ä¸ªæ–¹å‘ï¼Œå¦‚æœæœªä¸‹ä¸€æ­¥å­˜åœ¨æœªåˆ°è¾¾çš„ç‚¹ï¼Œè¯¥ç‚¹çš„æƒå€¼å°±å¢åŠ 
+	//é‡‡ç”¨sumè®°å½•æƒå€¼
 	int sum = 0;
 	for (int i = 0; i < 8; ++i) {
 		int x_next = x + dx[i];
@@ -128,34 +131,36 @@ int ChessBoardProblem::calculateTheWeight(int x, int y)
 
 void ChessBoardProblem::Warnsdorff()
 {
+	clock_t start, end;
+	start = clock();
 	InitStack(s);
-	int index = 0;//¿ÉĞĞ·½ÏòµÄindexÖ¸Õë
-	point now;//³õÊ¼µã
-	point direction[8];//·½Ïò
+	int index = 0;//å¯è¡Œæ–¹å‘çš„indexæŒ‡é’ˆ
+	point now;//åˆå§‹ç‚¹
+	point direction[8];//æ–¹å‘
 	memset(direction, 0, sizeof(direction));
 	initState();
 	Board[startX][startY] = order;
 	now.x = startX; now.y = startY;
-	//½«order<BOARD_SIZE*BOARD_SIZEÉèÖÃÎªÑ­»·ÍË³öµÄÌõ¼ş
+	//å°†order<BOARD_SIZE*BOARD_SIZEè®¾ç½®ä¸ºå¾ªç¯é€€å‡ºçš„æ¡ä»¶
 	while (order < BOARD_SIZE*BOARD_SIZE)
 	{
-		int size = 0;//¿ÉĞĞ·½ÏòµÄÊıÁ¿
-		//ËÑË÷8¸ö·½Ïò²¢¼ÆËãÈ¨Öµ
+		int size = 0;//å¯è¡Œæ–¹å‘çš„æ•°é‡
+		//æœç´¢8ä¸ªæ–¹å‘å¹¶è®¡ç®—æƒå€¼
 		for (int i = 0; i < 8; i++)
 		{
 			int x_next = now.x + dx[i];
 			int y_next = now.y + dy[i];
-			if (check(x_next, y_next) && Board[x_next][y_next] == 0) //Èç¹ûÎ´Ô½¹ı±ß½ç²¢ÇÒ»¹Î´×ß¹ı
+			if (check(x_next, y_next) && Board[x_next][y_next] == 0) //å¦‚æœæœªè¶Šè¿‡è¾¹ç•Œå¹¶ä¸”è¿˜æœªèµ°è¿‡
 			{
-				int weight = calculateTheWeight(x_next, y_next); //¼ÆËãÈ¨Öµ
+				int weight = calculateTheWeight(x_next, y_next); //è®¡ç®—æƒå€¼
 				direction[size].x = x_next; direction[size].y = y_next;
 				direction[size].weight = weight;
 				size++;
 			}
 		}
 		QuickSort(direction, size);
-		for (int i = 0; i < size; i++) direction[i].index = i;
-		//Èç¹ûÓĞÂ·¿É×ß£¬ÔòÏò¸ÃµãÇ°½ø
+		for (int i = 0; i < size; i++) direction[i].index = i;//è¿™é‡Œçš„indexå’Œiåˆšå¥½æ˜¯ä¸€ä¸€å¯¹åº”çš„å…³ç³»
+		//å¦‚æœæœ‰è·¯å¯èµ°ï¼Œåˆ™å‘è¯¥ç‚¹å‰è¿›
 		if (order >= 1 && size > 0 && index < size)
 		{
 			forward(now, direction, index);
@@ -167,24 +172,196 @@ void ChessBoardProblem::Warnsdorff()
 			Q.pop();
 		}
 	}
-	cout << BOARD_SIZE<<"¡Á" << BOARD_SIZE << "ÂíÌ¤ÆåÅÌÎÊÌâµÄÂ·¾¶Îª:\n";
-	int flag = 0;//ÅĞ¶¨ÊÇ·ñĞèÒªÊä³ö¶ººÅ
-	int cnt = 1;//ÅĞ¶¨ÊÇ·ñÊä³ö»»ĞĞ·û
+	std::cout << BOARD_SIZE<<"Ã—" << BOARD_SIZE << "é©¬è¸æ£‹ç›˜é—®é¢˜çš„è·¯å¾„ä¸º:\n";
+	std::cout << "(" <<startX << "," << startY<< "),";
+	int cnt = 2;//åˆ¤å®šæ˜¯å¦è¾“å‡ºæ¢è¡Œç¬¦
 	while (!Q.empty())
 	{
 		point p = Q.front(); Q.pop();
-		if (flag)
-			cout << ",";
-		cout << "(" << p.x << "," << p.y << ")";
-		if (cnt % BOARD_SIZE == 0) cout << endl;
+		std::cout << "(" << p.x << "," << p.y << ")";
+		if (cnt % BOARD_SIZE == 0) std::cout << endl;
+		else std::cout << ",";
 		cnt++;
 	}
+	end = clock();
+	cout << "å›æº¯æ³•ï¼ˆWarnsordffè§„åˆ™ï¼‰è¿è¡Œæ—¶é—´:" << end - start <<"æ¯«ç§’"<< endl;
 }
 
+/****åˆå§‹åŒ–****/
 void ChessBoardProblem::initState()
 {
 	for (int i = 0; i < BOARD_SIZE; i++)
 		for (int j = 0; j < BOARD_SIZE; j++) Board[i][j] = 0;
 	while (!isEmpty(s))
 		pop(s);
+	while (!Q.empty())
+		Q.pop();
+}
+/***å›æº¯æ³•**/
+void ChessBoardProblem::print_solution(int move_num)
+{
+	printf("8x8é©¬è¸æ£‹ç›˜é—®é¢˜çš„è·¯å¾„ä¸ºï¼š\n");
+	int cnt = 1;
+	for (int i = 0; i < move_num; i++)
+	{
+		printf("(%d,%d) ", path[i][0], path[i][1]);
+		if ((i + 1) % BOARD_SIZE == 0)	cout << endl;
+	}
+}
+
+int ChessBoardProblem::is_valid(int x, int y)
+{
+	if (x < 0 || y < 0 || x >= BOARD_SIZE || y >= BOARD_SIZE)
+		return 0;
+	if (sol[x][y] != -1)
+		return 0;
+	return 1;
+}
+
+int ChessBoardProblem::solve_knight_tour(int move_num, int cur_x, int cur_y)
+{
+	if (move_num == BOARD_SIZE * BOARD_SIZE)
+		return 1;
+
+	for (int i = 0; i < 8; i++) {
+		int new_x = cur_x + dx[i];
+		int new_y = cur_y + dy[i];
+		if (is_valid(new_x, new_y)) {
+			sol[new_x][new_y] = move_num;
+			path[move_num][0] = new_x;
+			path[move_num][1] = new_y;
+			if (solve_knight_tour(move_num + 1, new_x, new_y) == 1)
+				return 1;
+			else
+				sol[new_x][new_y] = -1;  // backtracking
+		}
+	}
+	return 0;
+}
+
+void ChessBoardProblem::knight_tour()
+{
+	for (int x = 0; x < BOARD_SIZE; x++)
+		for (int y = 0; y < BOARD_SIZE; y++)
+			sol[x][y] = -1;
+
+	sol[startX][startY] = 0;
+	path[0][0] = startX;
+	path[0][1] = startY;
+
+	clock_t start, end;
+	double cpu_time_used;
+
+	start = clock();
+	if (solve_knight_tour(1, startX, startY) == 0) {
+		printf("No solution found.\n");
+	}
+	else {
+		print_solution(BOARD_SIZE*BOARD_SIZE);
+	}
+	end = clock();
+	cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
+	printf("å›æº¯æ³•è¿è¡Œæ—¶é—´: %f æ¯«ç§’\n", cpu_time_used * 1000);
+}
+
+/**æ·±åº¦ä¼˜å…ˆæœç´¢**/
+void ChessBoardProblem::DFS(point& now, point path[], int flag[BOARD_SIZE][BOARD_SIZE], int& found, int count)
+{
+	if (found) //æ‰¾åˆ°ä¸€æ¬¡å°±é€€å‡º
+		return;
+	if (count >= BOARD_SIZE*BOARD_SIZE) //é©¬å·²ç»è¸è¿‡äº†æ‰€æœ‰æ£‹ç›˜
+	{
+		found += 1;
+	}
+	if (!checkDFS(now.x, now.y, flag)) //å‡ºç•Œæˆ–å·²è®¿é—®è¿‡
+		return;
+
+	path[count] = now;
+	count++; //æ»¡è¶³æ¡ä»¶è®¡æ•°åŠ 1
+	flag[now.x][now.y] = count; //å¯¹åº”èŠ‚ç‚¹è®°å½•è®¿é—®é¡ºåºï¼Œç¬¬å‡ æ¬¡è¢«è®¿é—®çš„
+
+	point next = nextPoint(now, flag);
+	DFS(next, path, flag, found, count); //ä¸‹ä¸€æ­¥çš„æœç´¢
+	flag[now.x][now.y] = 0; //å›æº¯ï¼Œæ ‡è®°æ¸…é›¶
+}
+
+int ChessBoardProblem::greedyOpt(point now, int flag[BOARD_SIZE][BOARD_SIZE])
+{
+	int nextCnt[8] = { -1,-1,-1,-1,-1,-1,-1,-1 };
+	for (int i = 0; i < 8; i++)
+	{
+		int Xnext = now.x + dx[i];
+		int Ynext = now.y + dy[i];
+		if (checkDFS(Xnext, Ynext, flag))
+		{
+			nextCnt[i]++;
+			for (int j = 0; j < 8; j++)
+			{
+				int Xnext_next = Xnext + dx[j];
+				int Ynext_next = Ynext + dy[j];
+				if (checkDFS(Xnext_next, Ynext_next, flag))
+					nextCnt[i]++;
+			}
+		}
+	}
+	int opt = 0; //è®°å½•ä¸‹ä¸€æ­¥çš„æ–¹å‘
+	for (int i = 0; i < 8; i++)
+	{
+		if (nextCnt[opt] == -1)
+			opt = i;
+		if ((nextCnt[i] < nextCnt[opt]) && nextCnt[i] != -1)
+		{
+			opt = i;
+		}
+	}
+	return opt;
+}
+
+point ChessBoardProblem::nextPoint(point now, int flag[BOARD_SIZE][BOARD_SIZE])
+{
+	int opt = greedyOpt(now, flag);
+	point next;
+	next.x = now.x + dx[opt];
+	next.y = now.y + dy[opt];
+	return next;
+}
+
+bool ChessBoardProblem::checkDFS(int x, int y, int flag[BOARD_SIZE][BOARD_SIZE])
+{
+	if (x > 8 - 1 || y > 8 - 1 || x < 0 || y < 0 || flag[x][y] != 0) //è¾¹ç•Œæ¡ä»¶
+		return false;
+	else
+		return true;
+}
+
+void ChessBoardProblem::output()
+{
+	
+	//è®¡æ—¶
+	clock_t start_a, end_a, start_b, end_b;
+	start_a = clock();
+	
+
+	point path[64];
+	int flag[BOARD_SIZE][BOARD_SIZE] = { 0 };
+	int found = 0;
+	int count = 0;
+	point start;
+	start.x = startX;
+	start.y = startY;
+	DFS(start, path, flag, found, count); //å¼€å§‹æœç´¢
+
+	int cnt = 1;
+	for (int i = 0; i < BOARD_SIZE * BOARD_SIZE; i++)
+	{
+		std::cout << '(' << path[i].x << ',' << path[i].y << ')';
+		if (cnt % BOARD_SIZE == 0) cout << endl;
+		else cout << ",";
+		cnt++;
+	}
+
+	
+	end_a = clock();
+	double time_a = (double)(end_a - start_a) / CLOCKS_PER_SEC;
+	cout << "æ·±åº¦ä¼˜å…ˆæœç´¢ï¼ˆå‰ªæï¼‰ç”¨æ—¶ï¼š" << time_a * 1000 << "æ¯«ç§’";
 }
