@@ -71,15 +71,4 @@ class ChessBoardProblem{
         void knight_tour();
 };
 
-/****初始化****/
-void ChessBoardProblem::initState()
-{
-    for (auto & i : Board)
-        for (int & j : i) j = 0;
-    while (!isEmpty(s))
-        pop(s);
-    while (!Q.empty())
-        Q.pop();
-}
-
 #endif
